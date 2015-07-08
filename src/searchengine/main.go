@@ -5,5 +5,7 @@ import (
 )
 
 func main() {
-	downloader.StartDownload(5, 5)
+	var dloader downloader.Downloader
+	dloader.Init(3)
+	dloader.StartDownload()
 }
