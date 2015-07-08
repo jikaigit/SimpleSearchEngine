@@ -14,7 +14,7 @@ func Download(uri string) (data []byte, err error) {
 		buff bytes.Buffer
 	)
 	if res, err = http.Get(uri); err != nil {
-		logger.Log("无法下载资源:" + uri)
+		// logger.Log("无法下载资源:" + uri)
 		return nil, err
 	}
 	defer func() {

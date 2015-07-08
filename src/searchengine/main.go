@@ -1,12 +1,16 @@
 package main
 
 import (
-	"fmt"
+	"downloader"
 )
 
 func main() {
-	var m map[int]string = make(map[int]string)
-	for i, data := range m {
-		fmt.Println(i, data)
+	var filter downloader.DownloadFilter
+	filter.Init("www.baidu.com")
+	if err := filter.AddFootPrint("http://www.baidu.com/"); err != nil {
+		println(err.Error())
+	}
+	if err := filter.AddFootPrint("www.baidu.com"); err != nil {
+		println(err.Error())
 	}
 }
