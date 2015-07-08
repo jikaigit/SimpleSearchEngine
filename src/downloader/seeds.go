@@ -15,7 +15,8 @@ func GetSeeds() (uris []string) {
 	if err != nil {
 		logger.Panic("获取爬行种子失败")
 	}
-	uris = strings.Split(string(data), "\n")
+	uris_str := strings.Replace(string(data), "\r\n", "\n", -1)
+	uris = strings.Split(uris_str, "\n")
 	return uris
 }
 

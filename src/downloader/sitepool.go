@@ -31,7 +31,7 @@ func (this *SitePool) GetSite() (uri string, err error) {
 	for domain, _ := range this.sites {
 		this.footprint[domain] = true
 		delete(this.sites, domain)
-		return "http://" + domain + "/", nil
+		return domain, nil
 	}
 	return "", errors.New("站点池已空")
 }

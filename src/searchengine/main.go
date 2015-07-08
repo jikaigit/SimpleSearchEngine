@@ -5,5 +5,5 @@ import (
 )
 
 func main() {
-
+	downloader.StartDownload(5, 5)
 }

@@ -6,7 +6,7 @@ import (
 	"net/url"
 )
 
-// 用于记录被下载过的页面
+// 用于记录被下载过的页面以防止重复下载相同的页面
 type DownloadFilter struct {
 	domain     string
 	footprintf map[string]bool
