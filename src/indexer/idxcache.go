@@ -11,6 +11,7 @@ var count int
 type TreeNode struct {
 	word      string
 	frequency int
+	sources   []string
 	color     string
 	lchild    *TreeNode
 	rchild    *TreeNode
@@ -24,14 +25,11 @@ type IndexCache struct {
 	source string
 }
 
-func (this *IndexCache) Init(source string) {
-	this.source = source
-}
-
-func (this *IndexCache) Add(word string) {
+func (this *IndexCache) Add(word string, source string) {
 	this.create = new(TreeNode)
 	this.create.word = word
 	this.create.frequency = 1
+	this.create.sources = []string{source}
 	this.create.color = "red"
 
 	if !this.IsEmpty() {
@@ -62,6 +60,7 @@ func (this *IndexCache) Add(word string) {
 			} else {
 				//如果要插入的值在树中已经存在
 				this.cur.frequency++
+				this.cur.sources = append(this.cur.sources, source)
 				return
 			}
 		}

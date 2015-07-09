@@ -1,0 +1,63 @@
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <title>小凯搜索引擎</title>
+    <style>
+        body {
+            background-color: #E9E9E9;
+            width: 100%;
+            height: 100%;
+            margin: 0px;
+            padding: 0px;
+        }
+        .search_div {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: #FFFFFF;
+        }
+        .search_bar {
+            height: 50px;
+            width: 600px;
+        }
+        .search-editor {
+            position: absolute;
+            height: 50px;
+            width: 600px;
+            font-family: "Microsoft YaHei", SimHei;
+            font-size: 20px;
+            padding: 5px;
+            color: #555555;
+            border: 1px solid #888888;
+        }
+        .search-editor:focus {
+            box-shadow: 0px 0px 6px 0px #AAAAAA inset;
+        }
+        .search-btn {
+            position: absolute;
+            height: 44px;
+            width: 44px;
+            margin: 3px 0px 0px 553px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="search_div">
+        <div id="search_bar" class="search_bar">
+            <input class="search-editor" type="text" placeholder="输入要搜索的关键词..."/>
+            <svg class="search-btn">
+                <circle cx="22px" cy="22px" r="16px" fill="#777777"/>
+                <line x1="22px" y1="22px" x2="37px" y2="37px" stroke-width="8px" stroke="#777777"/>
+                <circle cx="22px" cy="22px" r="13px" fill="#FFFFFF"/>
+            </svg>
+        </div>
+    </div>
+    
+    <script language="javascript">
+        var search_bar = document.getElementById("search_bar");
+        search_bar.style.marginTop = (document.body.offsetHeight/2 - 25).toString();
+        search_bar.style.marginLeft = (document.body.offsetWidth/2 - 300).toString();
+    </script>
+</body>
+</html>
