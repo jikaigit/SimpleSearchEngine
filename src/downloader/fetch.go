@@ -2,6 +2,7 @@ package downloader
 
 import (
 	"bytes"
+	"errors"
 	"io"
 	"logger"
 	"net/http"
@@ -22,6 +23,9 @@ func Download(uri string) (data []byte, err error) {
 			logger.Log("下载资源:" + uri + "的HTTP响应关闭失败")
 		}
 	}()
+	if res.StatusCode >= 300 || res.StatusCode < 200 {
+		return nil, errors.New("页面响应了错误代码(非200-299的响应吗)")
+	}
 	if _, err = io.Copy(&buff, res.Body); err != nil {
 		logger.Log("将资源数据写入缓冲区失败")
 		return nil, err

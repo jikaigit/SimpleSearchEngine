@@ -34,7 +34,8 @@ func (this *DownloadFilter) AddFootPrint(uri string) error {
 		return err
 	}
 	if u.Host != this.domain {
-		logger.Log("添加的资源定位与过滤器中设置的指定域不同, 主域:" + this.domain + ", 添加域:" + u.Host)
+		// 下面这行日志，日过你打算跟踪一个网站的外链几率，可以开启它统计一下
+		// logger.Log("添加的资源定位与过滤器中设置的指定域不同, 主域:" + this.domain + ", 添加域:" + u.Host)
 		return errors.New("different domain")
 	}
 	this.footprintf[uri] = true

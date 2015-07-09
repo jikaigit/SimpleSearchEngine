@@ -3,6 +3,7 @@ package downloader
 import (
 	"fmt"
 	"logger"
+	"parser"
 )
 
 // 搜索引擎的下载器，用来游荡在互联网上下载信息
@@ -65,7 +66,9 @@ func (this *Downloader) download(uri string, filter *DownloadFilter, max_routine
 
 	var (
 		data []byte
-		err  error
+		//contents []string
+		suburls []string
+		err     error
 	)
 	if data, err = Download(uri); err != nil {
 		<-max_routine
@@ -78,13 +81,11 @@ func (this *Downloader) download(uri string, filter *DownloadFilter, max_routine
 	fmt.Println(string(uri))
 
 	// 这里往下就不要再向max_routine里发送信息了
+	_, suburls = parser.ParsePage(data, uri)
 
-	deepth--
-	if deepth <= 0 {
+	if deepth--; deepth <= 0 {
 		return
 	}
-
-	suburls := ParseURL(string(data), uri)
 	for _, suburl := range suburls {
 		max_routine <- 1
 		go this.download(suburl, filter, max_routine, deepth)
