@@ -1,11 +1,23 @@
 package main
 
 import (
-	"downloader"
+	"fmt"
+	"indexer"
+	"io/ioutil"
+	"parser"
+	"unicode/utf8"
 )
 
 func main() {
-	var dl downloader.Downloader
-	dl.Init(12)
-	dl.StartDownload()
+	data, err := ioutil.ReadFile("C:\\Users\\Administrator\\Desktop\\input.txt")
+	if err != nil {
+		fmt.Println("打开文件失败")
+		return
+	}
+
+	contents, _ := parser.ParsePage(data, "host.com")
+
+	var cacher indexer.Indexer
+	cacher.Init()
+	cacher.AnalyseAndGenerateIndex(contents, "host.com")
 }

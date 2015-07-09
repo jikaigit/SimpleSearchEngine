@@ -1,7 +1,7 @@
 package downloader
 
 import (
-	"fmt"
+	"indexer"
 	"logger"
 	"parser"
 )
@@ -12,6 +12,7 @@ type Downloader struct {
 	sitepool                      SitePool
 	site_need_crawl               int64
 	site_finish_crawl             int64
+	idxer                         indexer.Indexer
 }
 
 // 参数:
@@ -19,6 +20,7 @@ type Downloader struct {
 func (this *Downloader) Init(maxsite int) {
 	this.site_crawl_max_count_ctl_chan = make(chan int, maxsite)
 	this.sitepool.Init()
+	this.idxer.Init()
 }
 
 func (this *Downloader) StartDownload() {
@@ -65,10 +67,10 @@ func (this *Downloader) download(uri string, filter *DownloadFilter, max_routine
 	}
 
 	var (
-		data []byte
-		//contents []string
-		suburls []string
-		err     error
+		data     []byte
+		contents []string
+		suburls  []string
+		err      error
 	)
 	if data, err = Download(uri); err != nil {
 		<-max_routine
@@ -78,14 +80,17 @@ func (this *Downloader) download(uri string, filter *DownloadFilter, max_routine
 		<-max_routine
 	}
 
-	fmt.Println(string(uri))
-
 	// 这里往下就不要再向max_routine里发送信息了
-	_, suburls = parser.ParsePage(data, uri)
+	contents, suburls = parser.ParsePage(data, uri)
+
+	// 分析页面中的有用信息并生成索引
+	this.idxer.AnalyseAndGenerateIndex(contents, uri)
 
 	if deepth--; deepth <= 0 {
 		return
 	}
+
+	// 如果深度没有达到界限就继续沿着子链接下载
 	for _, suburl := range suburls {
 		max_routine <- 1
 		go this.download(suburl, filter, max_routine, deepth)
