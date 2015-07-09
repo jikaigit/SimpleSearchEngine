@@ -11,7 +11,6 @@ var count int
 type TreeNode struct {
 	word      string
 	frequency int
-	sources   []string
 	color     string
 	lchild    *TreeNode
 	rchild    *TreeNode
@@ -22,13 +21,17 @@ type IndexCache struct {
 	root   *TreeNode
 	cur    *TreeNode
 	create *TreeNode
+	source string
+}
+
+func (this *IndexCache) Init(source string) {
+	this.source = source
 }
 
 func (this *IndexCache) Add(word string) {
 	this.create = new(TreeNode)
 	this.create.word = word
 	this.create.frequency = 1
-	this.create.sources = nil
 	this.create.color = "red"
 
 	if !this.IsEmpty() {
@@ -294,14 +297,14 @@ func (this IndexCache) InOrderTravel() {
 	inOrderTravel(this.root)
 }
 
-func writeToFile(node *TreeNode, index_file *os.File) {
+func (this IndexCache) writeToFile(node *TreeNode, index_file *os.File) {
 	if node != nil {
 		if node.lchild != nil {
-			writeToFile(node.lchild, index_file)
+			this.writeToFile(node.lchild, index_file)
 		}
-		fmt.Fprintf(index_file, "%s %d\r\n", node.word, node.frequency)
+		fmt.Fprintf(index_file, "%s %d %s\r\n", node.word, node.frequency, this.source)
 		if node.rchild != nil {
-			writeToFile(node.rchild, index_file)
+			this.writeToFile(node.rchild, index_file)
 		}
 	}
 }
@@ -317,7 +320,7 @@ func (this IndexCache) WriteToFile(file string) error {
 			logger.Log("关闭临时索引文件:'" + file + "'失败")
 		}
 	}()
-	writeToFile(this.root, index_file)
+	this.writeToFile(this.root, index_file)
 	return nil
 }
 
