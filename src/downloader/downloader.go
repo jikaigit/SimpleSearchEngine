@@ -17,10 +17,10 @@ type Downloader struct {
 
 // 参数:
 // maxsite用来表示能同时爬行的网站数目
-func (this *Downloader) Init(maxsite int) {
+func (this *Downloader) Init(maxsite int, idxer indexer.Indexer) {
 	this.site_crawl_max_count_ctl_chan = make(chan int, maxsite)
 	this.sitepool.Init()
-	this.idxer.Init()
+	this.idxer = idxer
 }
 
 func (this *Downloader) StartDownload() {

@@ -45,8 +45,8 @@
 <body>
     <div class="search_div">
         <div id="search_bar" class="search_bar">
-            <input class="search-editor" type="text" placeholder="输入要搜索的关键词..."/>
-            <svg class="search-btn">
+            <input id="search-editor" class="search-editor" type="text" placeholder="输入要搜索的关键词..."/ onkeydown="_search();">
+            <svg class="search-btn" onclick="search();">
                 <circle cx="22px" cy="22px" r="16px" fill="#777777"/>
                 <line x1="22px" y1="22px" x2="37px" y2="37px" stroke-width="8px" stroke="#777777"/>
                 <circle cx="22px" cy="22px" r="13px" fill="#FFFFFF"/>
@@ -58,6 +58,17 @@
         var search_bar = document.getElementById("search_bar");
         search_bar.style.marginTop = (document.body.offsetHeight/2 - 25).toString();
         search_bar.style.marginLeft = (document.body.offsetWidth/2 - 300).toString();
+        
+        function _search() {
+            if (event.keyCode === 13) {
+                search();
+            }
+        }
+        
+        function search() {
+            var search_content = (document.getElementById("search-editor")).value;
+            window.location.href = "http://127.0.0.1/search?question=" + search_content;
+        }
     </script>
 </body>
 </html>

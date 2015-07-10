@@ -5,6 +5,12 @@ import (
 	"os"
 )
 
+var SearchEngineIndexer Indexer
+
+func init() {
+	SearchEngineIndexer.Init()
+}
+
 const (
 	dic_file string = "../github.com/huichen/sego/data/dictionary.txt"
 	idx_dir  string = "../../index"
@@ -41,4 +47,16 @@ func (this *Indexer) AnalyseAndGenerateIndex(contents []string, source string) {
 			}
 		}
 	}
+}
+
+func (this Indexer) Search(question string) (sources []string) {
+	node := this.index.Search(question)
+	if node != nil && node.sources != nil {
+		return node.sources
+	}
+	return nil
+}
+
+func (this Indexer) Debug() {
+	this.index.InOrderTravel()
 }

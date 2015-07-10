@@ -288,7 +288,7 @@ func (this IndexCache) InOrderTravel() {
 	inOrderTravel = func(node *TreeNode) {
 		if node != nil {
 			inOrderTravel(node.lchild)
-			fmt.Printf("%s\r\n", node.word)
+			fmt.Printf("%s %d\r\n", node.word, node.frequency)
 			inOrderTravel(node.rchild)
 		}
 	}
