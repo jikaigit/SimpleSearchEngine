@@ -4,20 +4,19 @@ import (
 	"indexer"
 	"logger"
 	"parser"
+	"time"
 )
 
 // 搜索引擎的下载器，用来游荡在互联网上下载信息
 type Downloader struct {
 	site_crawl_max_count_ctl_chan chan int
 	sitepool                      SitePool
-	site_need_crawl               int64
-	site_finish_crawl             int64
-	idxer                         indexer.Indexer
+	idxer                         *indexer.Indexer
 }
 
 // 参数:
 // maxsite用来表示能同时爬行的网站数目
-func (this *Downloader) Init(maxsite int, idxer indexer.Indexer) {
+func (this *Downloader) Init(maxsite int, idxer *indexer.Indexer) {
 	this.site_crawl_max_count_ctl_chan = make(chan int, maxsite)
 	this.sitepool.Init()
 	this.idxer = idxer
@@ -34,21 +33,22 @@ func (this *Downloader) StartDownload() {
 		this.sitepool.AddSite(seed)
 	}
 
+	start_time := time.Now().UnixNano()
 	for {
-		if domain, err = this.sitepool.GetSite(); err != nil && this.site_need_crawl == this.site_finish_crawl {
-			logger.Log("下载已经全部完成")
+		if domain, err = this.sitepool.GetSite(); err == nil {
+			this.site_crawl_max_count_ctl_chan <- 1
+			go this.travelSiteAndDownload(domain, 5)
+		}
+		if time.Duration(time.Now().UnixNano()-start_time) >= time.Duration(time.Second*45) {
+			logger.Log("下载器已经完成爬行")
 			return
 		}
-		this.site_crawl_max_count_ctl_chan <- 1
-		this.site_need_crawl++
-		go this.travelSiteAndDownload(domain, 5)
 	}
 }
 
 func (this *Downloader) travelSiteAndDownload(domain string, maxdeepth int) {
 	defer func() {
 		<-this.site_crawl_max_count_ctl_chan
-		this.site_finish_crawl++
 	}()
 	var (
 		filter      DownloadFilter

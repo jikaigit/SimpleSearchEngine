@@ -2,7 +2,7 @@ package indexer
 
 import (
 	"github.com/huichen/sego"
-	"os"
+	"sync"
 )
 
 var SearchEngineIndexer Indexer
@@ -23,9 +23,9 @@ var (
 // 索引器用来分析下载器传来的页面数据，然后建立索引以供搜索引擎
 // 执行查询操作
 type Indexer struct {
-	index_file *os.File
-	index      IndexCache
-	segmenter  sego.Segmenter
+	index     IndexCache
+	segmenter sego.Segmenter
+	lock      sync.RWMutex
 }
 
 func (this *Indexer) Init() {
@@ -33,24 +33,35 @@ func (this *Indexer) Init() {
 }
 
 func (this *Indexer) AnalyseAndGenerateIndex(contents []string, source string) {
-	var index_cache IndexCache
-
+	if contents == nil || len(contents) <= 0 || source == "" {
+		return
+	}
 	for _, content := range contents {
 		segs := this.segmenter.Segment([]byte(content))
+		if segs == nil || len(segs) <= 0 {
+			break
+		}
 		for _, seg := range segs {
+			if seg.Token() == nil {
+				continue
+			}
 			word := seg.Token().Text()
 			switch word {
 			case "", " ", "\t", "\r", "\n", ".", ",", "\"", "'", "?", "!":
 				// do nothing
 			default:
-				index_cache.Add(word, source)
+				this.lock.Lock()
+				this.index.Add(word, source)
+				this.lock.Unlock()
 			}
 		}
 	}
 }
 
 func (this Indexer) Search(question string) (sources []string) {
+	this.lock.Lock()
 	node := this.index.Search(question)
+	this.lock.Unlock()
 	if node != nil && node.sources != nil {
 		return node.sources
 	}
@@ -58,5 +69,7 @@ func (this Indexer) Search(question string) (sources []string) {
 }
 
 func (this Indexer) Debug() {
+	this.lock.RLock()
 	this.index.InOrderTravel()
+	this.lock.RUnlock()
 }

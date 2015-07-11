@@ -9,7 +9,7 @@ import (
 
 func init() {
 	var dl downloader.Downloader
-	dl.Init(12, indexer.SearchEngineIndexer)
+	dl.Init(12, &indexer.SearchEngineIndexer)
 	go dl.StartDownload()
 }
 

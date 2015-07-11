@@ -39,6 +39,7 @@ func Search(w http.ResponseWriter, r *http.Request) {
                 height: 50px;
                 line-height: 50px;
                 color: #555555;
+                overflow: hidden;
                 padding: 0px 15px 0px 15px;
                 box-shadow: 0px 0px 5px 0px #AAAAAA;
                 font-size: 18px;
@@ -50,7 +51,7 @@ func Search(w http.ResponseWriter, r *http.Request) {
     <body>`
 	if sources != nil {
 		for _, source := range sources {
-			page_data += "<div class='.result'><a href='"
+			page_data += "<div class='result'><a href='"
 			page_data += source
 			page_data += "'>"
 			page_data += source
