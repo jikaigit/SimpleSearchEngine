@@ -11,7 +11,7 @@ var count int
 type TreeNode struct {
 	word      string
 	frequency int
-	sources   []string
+	sources   map[string]int
 	color     string
 	lchild    *TreeNode
 	rchild    *TreeNode
@@ -29,7 +29,7 @@ func (this *IndexCache) Add(word string, source string) {
 	this.create = new(TreeNode)
 	this.create.word = word
 	this.create.frequency = 1
-	this.create.sources = []string{source}
+	this.create.sources = make(map[string]int)
 	this.create.color = "red"
 
 	if !this.IsEmpty() {
@@ -39,6 +39,7 @@ func (this *IndexCache) Add(word string, source string) {
 				//如果要插入的值比当前节点的值小，则当前节点指向当前节点的左孩子，如果
 				//左孩子为空，就在这个左孩子上插入新值
 				if this.cur.lchild == nil {
+					this.create.sources[source] = 1
 					this.cur.lchild = this.create
 					this.create.parent = this.cur
 					break
@@ -50,6 +51,7 @@ func (this *IndexCache) Add(word string, source string) {
 				//如果要插入的值比当前节点的值大，则当前节点指向当前节点的右孩子，如果
 				//右孩子为空，就在这个右孩子上插入新值
 				if this.cur.rchild == nil {
+					this.create.sources[source] = 1
 					this.cur.rchild = this.create
 					this.create.parent = this.cur
 					break
@@ -60,12 +62,17 @@ func (this *IndexCache) Add(word string, source string) {
 			} else {
 				//如果要插入的值在树中已经存在
 				this.cur.frequency++
-				this.cur.sources = append(this.cur.sources, source)
+				if count, ok := this.cur.sources[source]; ok {
+					this.cur.sources[source] = count + 1
+				} else {
+					this.cur.sources[source] = 1
+				}
 				return
 			}
 		}
 
 	} else {
+		this.create.sources[source] = 1
 		this.root = this.create
 		this.root.color = "black"
 		this.root.parent = nil

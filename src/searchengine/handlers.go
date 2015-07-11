@@ -46,17 +46,33 @@ func Search(w http.ResponseWriter, r *http.Request) {
                 background-color: #FFFFFF;
                 cursor: pointer;
             }
+            .no-result {
+                font-family: "Microsoft YaHei", SimHei;
+                background-color: #FF3333;
+                color: #FFFFFF;
+                text-shadow: 0px 0px 2px #FFFFFF;
+                font-size: 18px;
+                height: 80px;
+                width: 60%;
+                margin-left: 20%;
+                line-height: 80px;
+                text-align: center;
+                margin-top: 280px;
+                box-shadow: 0px 0px 10px 0px #FF3333;
+            }
         </style>
     </head>
     <body>`
 	if sources != nil {
-		for _, source := range sources {
+		for source, _ := range sources {
 			page_data += "<div class='result'><a href='"
 			page_data += source
 			page_data += "'>"
 			page_data += source
 			page_data += "</a></div>"
 		}
+	} else {
+		page_data += "<div class='no-result'>没有搜索结果</div>"
 	}
 	page_data += "</body></html>"
 

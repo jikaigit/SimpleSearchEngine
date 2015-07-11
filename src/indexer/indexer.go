@@ -58,12 +58,15 @@ func (this *Indexer) AnalyseAndGenerateIndex(contents []string, source string) {
 	}
 }
 
-func (this Indexer) Search(question string) (sources []string) {
+func (this Indexer) Search(question string) (sources map[string]int) {
 	this.lock.Lock()
 	node := this.index.Search(question)
 	this.lock.Unlock()
 	if node != nil && node.sources != nil {
 		return node.sources
+	}
+	if node == nil {
+		return nil
 	}
 	return nil
 }

@@ -39,7 +39,7 @@ func (this *Downloader) StartDownload() {
 			this.site_crawl_max_count_ctl_chan <- 1
 			go this.travelSiteAndDownload(domain, 5)
 		}
-		if time.Duration(time.Now().UnixNano()-start_time) >= time.Duration(time.Second*45) {
+		if time.Duration(time.Now().UnixNano()-start_time) >= time.Duration(time.Second*150) {
 			logger.Log("下载器已经完成爬行")
 			return
 		}
